@@ -1,0 +1,132 @@
+import random
+import seaborn
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+
+
+# Load text data 
+filePath = 'C:\\Users\\zaina\\OneDrive\\Documents\\Artificial Intelligence\\Assignment_5\\ANN_Iris_data.txt'
+irisData = pd.read_csv(filePath)
+
+# Assuming irisData is a DataFrame
+# Map string labels to integers
+label_map = {'Iris-setosa': 0, 'Iris-versicolor': 1, 'Iris-virginica': 2}
+colors = irisData.iloc[:, 4].map(label_map)
+
+# Plot the initial data
+plt.figure(figsize=(10, 4))
+plt.subplot(1, 2, 1)
+scatter_plot_1 = plt.scatter(
+    irisData.iloc[:, 0],  # Sepal length
+    irisData.iloc[:, 1],  # Sepal width
+    alpha=0.5,
+    c=colors,
+    cmap='viridis'  # Optional: choose a colormap
+)
+plt.xlabel('Sepal Length')
+plt.ylabel('Sepal Width')
+plt.title('Sepal Length vs Width')
+plt.colorbar(scatter_plot_1, ticks=[0, 1, 2], label='Species')
+plt.grid()
+plt.subplot(1,2,2)
+
+scatter_plot_2 = plt.scatter(
+    irisData.iloc[:, 2],  # Petal length
+    irisData.iloc[:, 3],  # Petal width
+    alpha=0.5,
+    c=colors,
+    cmap='viridis'  # Optional: choose a colormap
+)
+plt.xlabel('Petal Length')
+plt.ylabel('Petal Width')
+plt.title('Petal Length vs Width')
+plt.colorbar(scatter_plot_2, ticks=[0, 1, 2], label='Species')
+plt.grid()
+
+# Splitting the data into train, validation, test
+# First separating features from labels
+
+X = irisData.iloc[:,:-1].values # all features
+Y = irisData.iloc[:,-1]  # all labels
+
+# Create identity matrix for one-hot encoding
+Y_one_hot = np.eye(3)[Y]
+
+x_train, x_temp, y_train, y_temp = train_test_split(X, Y_one_hot, test_size=0.4, random_state=42, stratify=Y_one_hot)
+x_val, x_test, y_val, y_test = train_test_split(x_temp, y_temp, test_size=0.5, random_state=42, stratify=y_temp)
+
+# Initializing parameters, weights and biases
+input_dim = 4
+hidden_dim = 10
+output_layer = 3
+
+w1 = np.random.randn(hidden_dim, input_dim)
+b1 = np.random.randn(hidden_dim)
+w2 = np.random.randn(output_layer, hidden_dim)
+b2 = np.random.randn(output_layer)
+
+epoch = 100
+learning_rate = 0.01
+
+# Forward pass
+def softmax(a2):
+    exp_a2 = np.exp(a2 - np.max(a2, axis = 0))
+    return exp_a2 / np.sum(exp_a2, axis = 0)
+
+
+for i in range(epoch):
+    # Layer 1  (10 x 4)
+    a1 = np.dot(w1,x_train.T) + b1[:, np.newaxis]
+    # Layer 1 activation (ReLU)
+    h = np.maximum(0, a1)
+    # Layer 2
+    a2 = np.dot(w2,h) + b2[:, np.newaxis]
+    #  Softmax (converting to probabilities)
+    y_pred = softmax(a2)
+
+# Compute the loss (cross-entropy)
+    loss = -np.sum(Y_one_hot * np.log(y_pred.T)) / x_train.shape[0]
+
+# Backpropagation
+# Compute output layer error
+    delta2 = y_pred - Y_one_hot.T   #(3, samples)
+
+# Gradient for w2 and b2 
+    dw2 = np.dot(delta2, h.T) / x_train.shape[0] 
+    db2 = np.sum(delta2, axis = 1, keepdims=True) / x_train.shape[0]
+
+# Compute hidden layer error (delta 1)
+
+    delta1 = np.dot(w2.T, delta2) * (a1 > 0)
+    dw1 = np.dot(delta1, x_train.T) / x_train.shape[0]
+
+    db1 = np.sum(delta1,  axis = 1, keepdims=True)/ x_train.shape[0]
+
+    # Update weights and biases
+    w1 = w1 - learning_rate * dw1
+    b1 = b1 - learning_rate *db1
+    w2 = w2 - learning_rate * dw2
+    b2 = b2 - learning_rate * db2
+
+
+        # Optionally track and print the loss/accuracy every 10 epochs
+    if epoch % 10 == 0:
+        print(f"Epoch {epoch + 1}/{epoch}, Loss: {loss:.4f}")
+
+    # Compute accuracy
+    correct_predictions = np.argmax(y_pred, axis=0) == np.argmax(Y_one_hot.T, axis=0)
+    accuracy = np.mean(correct_predictions)
+    print(f"Epoch {epoch + 1}, Accuracy: {accuracy:.4f}")
+
+
+
+
+
+
+
+
+
+
+

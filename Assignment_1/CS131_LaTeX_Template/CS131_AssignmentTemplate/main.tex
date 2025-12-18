@@ -1,0 +1,69 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage[utf8]{inputenc}
+\usepackage{natbib}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{amsmath}
+
+
+
+\title{Title Here}
+\author{Student name here}
+\date{\vspace{-1em}}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The report portion of each assignment is a way for students to learn how to present ideas and learn about replicability. These reports shouldn't be incredibly long and aren't graded on length. Below, you'll find each section and a brief description of we expect to be included in each.
+\end{abstract}
+
+\section{Introduction}
+
+The introduction should describe the problem (in a non-technical manner, i.e., without math, equations, etc.), as well as motivate the problem, i.e., why is it important? What kind of problem are you trying to solve and how does it relate to similar problems in the same area? Cite any outside references that contributed to your work or ideas like this \cite{knuth1997art}. 
+
+\section{Methodology/Technical Approach}
+
+A detailed description of your problem (with related math, notation, algorithms, figures, etc.). Use footnotes like this\footnote{Here is a footnote!} if you'd like to add links or notes about particular subjects.
+\\\\
+Your methodology section should have enough information so that if somebody were to read your report, they could replicate your work. The methodology from your additional experiment should be added here too.
+\\\\
+You can use the \textit{algorithmic} package in LaTeX to create pretty algorithms if you need to:
+%
+\begin{algorithm}
+\caption{Random Selection Algorithm}
+\begin{algorithmic}
+\STATE \textbf{Input:} A list $L$ of $n$ elements
+\STATE \textbf{Output:} A randomly selected element $x$ from $L$
+\STATE
+\STATE $i \gets$ random integer from $1$ to $n$
+\STATE $x \gets L[i]$
+\STATE \textbf{return} $x$
+\end{algorithmic}
+\end{algorithm}
+
+Or create equations and center them with the bracket method:
+
+\[P(y = i \mid \mathbf{x}) = \frac{e^{\mathbf{w}_i^\top \mathbf{x}}}{\sum_{j=1}^K e^{\mathbf{w}_j^\top \mathbf{x}}}
+\]
+
+Or keep them inline with the dollar sign method: $y = \sum^{\infty}_{i=0}\frac{1}{2}^n$
+
+\section{Experimental Results / Technical Demonstration}
+
+This section is a description of your results and how you evaluated or demonstrated your solution. Results from the additional experiment also go here as well as any figures, tables or images you'd like to add.
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.6\textwidth]{universe.jpeg}
+\caption{An image of the universe.}
+\label{fig:universe}
+\end{figure}
+
+\section{Conclusion}
+
+A high level summary of what was accomplished, along with a discussion on limitations and avenues for future work. Analysis of results (including the extra experiment) go here.
+
+\bibliographystyle{plain}
+\bibliography{citations}
+\end{document}
